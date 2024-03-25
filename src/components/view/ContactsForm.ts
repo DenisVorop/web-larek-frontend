@@ -1,29 +1,30 @@
 import { Contacts } from '../../types';
-import { Form } from '../base/Form';
 import { Events } from '../base/Events';
+import { Form } from '../base/Form';
 
-export class ContactsForm extends Form<Contacts> {
-	/**
-	 * Constructor for the class.
-	 *
-	 * @param {HTMLElement} container - the HTML element to contain the basket
-	 * @param {Events} events - the events for the basket
-	 */
+export class ContactsFormUI extends Form<Contacts> {
 	constructor(container: HTMLFormElement, events: Events) {
 		super(container, events);
+
+		this.submitElement.addEventListener('click', () => {
+			this.events.emit('order.contacts:next');
+		});
 	}
 
-	/**
-	 * Sets the value of the phone input field to the specified value.
-	 *
-	 * @param {string} value - The value to set the phone input field to.
-	 */
-	set phone(value: string) {}
+	set phone(value: string) {
+		(this.container.elements.namedItem('phone') as HTMLInputElement).value =
+			value;
+	}
 
-	/**
-	 * Set the email value in the container element
-	 *
-	 * @param {string} value - the email value to set
-	 */
-	set email(value: string) {}
+	set email(value: string) {
+		(this.container.elements.namedItem('email') as HTMLInputElement).value =
+			value;
+	}
+
+	protected onChange(field: keyof Contacts, value: string) {
+		this.events.emit('order.contacts:update', {
+			field,
+			value,
+		});
+	}
 }

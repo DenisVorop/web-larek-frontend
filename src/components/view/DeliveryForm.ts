@@ -1,40 +1,56 @@
-import { Delivery, PaymentOptions } from '../../types';
-import { Form } from '../base/Form';
+import { Delivery, Payments } from '../../types';
+import { ensureAllElements } from '../../utils/utils';
 import { Events } from '../base/Events';
+import { Form } from '../base/Form';
 
-export class DeliveryForm extends Form<Delivery> {
-	protected _paymentContainer: HTMLDivElement;
-	protected _paymentButtons: HTMLButtonElement[];
-
-	/**
-	 * constructor function for initializing the container and events
-	 *
-	 * @param {HTMLFormElement} container - The container element for the form.
-	 * @param {Events} events - The events object for handling form events.
-	 */
+export class DeliveryFormUI extends Form<Delivery> {
+	paymentButtons: HTMLButtonElement[];
 	constructor(container: HTMLFormElement, events: Events) {
 		super(container, events);
+
+		this.submitElement.addEventListener('click', () => {
+			this.events.emit('order.delivery:next');
+		});
+
+		this.paymentButtons = ensureAllElements(
+			'.order__buttons button',
+			container
+		);
+
+		this.paymentButtons.forEach((button) => {
+			button.addEventListener('click', (event) => {
+				this.resetButtonStatus();
+				button.classList.add('button_alt-active');
+				const paymentMethod = (event.target as HTMLButtonElement).name;
+				this.paymentSelection(paymentMethod as Payments);
+			});
+		});
 	}
 
-	/**
-	 * Set the payment method for a given class name by toggling button classes.
-	 *
-	 * @param {string} className - The name of the class to set as the payment method.
-	 * @return {void}
-	 */
-	setPaymentMethod(className: string) {}
+	resetButtonStatus() {
+		if (!this.paymentButtons) return;
 
-	/**
-	 * Set the payment method value.
-	 *
-	 * @param {string} value - the payment method value to set
-	 */
-	set payment(value: string) {}
+		this.paymentButtons.forEach((button) => {
+			button.classList.remove('button_alt-active');
+		});
+	}
 
-	/**
-	 * Setter for the address property.
-	 *
-	 * @param {PaymentOptions} value - the value to set for the address
-	 */
-	set address(value: PaymentOptions) {}
+	set address(value: string) {
+		(this.container.elements.namedItem('address') as HTMLInputElement).value =
+			value;
+	}
+
+	paymentSelection(method: Payments) {
+		this.events.emit('order.delivery:update', {
+			field: 'payment',
+			value: method,
+		});
+	}
+
+	protected onChange(field: keyof Delivery, value: string) {
+		this.events.emit('order.delivery:update', {
+			field,
+			value,
+		});
+	}
 }

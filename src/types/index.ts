@@ -1,10 +1,10 @@
-export enum Categories {
-	SOFT = 'софт-скил',
-	OTHER = 'другое',
-	ADDITIONAL = 'дополнительное',
-	BUTTON = 'кнопка',
-	HARD = 'хард-скил',
-}
+export type Payments = 'online' | 'offline' | '';
+export type Categories =
+	| 'софт-скил'
+	| 'другое'
+	| 'дополнительное'
+	| 'кнопка'
+	| 'хард-скил';
 
 export interface Product {
 	id: string;
@@ -13,13 +13,12 @@ export interface Product {
 	image: string;
 	category: Categories;
 	price: number | null;
+	isAddedToBasket?: boolean;
 }
-
-export type PaymentOptions = 'online' | 'offline';
 
 export interface Delivery {
 	address: string;
-	payment: PaymentOptions;
+	payment: Payments;
 }
 
 export interface Contacts {
@@ -27,7 +26,14 @@ export interface Contacts {
 	email: string;
 }
 
-export interface Order {
+export interface OrderForm extends Contacts, Delivery {}
+
+export interface Order extends OrderForm {
 	total: number;
-	products: string[];
+	items: string[];
+}
+
+export interface OrderData {
+	id: string;
+	total: number;
 }

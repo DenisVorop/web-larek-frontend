@@ -1,5 +1,6 @@
 import { View } from './View';
 import { Events } from './Events';
+import { ensureElement } from '../../utils/utils';
 
 interface FormProps {
 	valid: boolean;
@@ -7,47 +8,53 @@ interface FormProps {
 }
 
 export class Form<T> extends View<FormProps> {
-	protected _submit: HTMLButtonElement;
-	protected _errors: HTMLElement;
+	protected submitElement: HTMLButtonElement;
+	protected errorsElement: HTMLElement;
 
-	/**
-	 * Initializes a new instance of the class with the provided container element and events.
-	 *
-	 * @param {HTMLFormElement} container - The container element for the form.
-	 * @param {Events} events - The events object for handling form events.
-	 */
 	constructor(protected container: HTMLFormElement, protected events: Events) {
 		super(container);
+
+		this.submitElement = ensureElement<HTMLButtonElement>(
+			'button[type=submit]',
+			this.container
+		);
+		this.errorsElement = ensureElement<HTMLElement>(
+			'.form__errors',
+			this.container
+		);
+
+		this.container.addEventListener('input', (e: Event) => {
+			const target = e.target as HTMLInputElement;
+			const field = target.name as keyof T;
+			const value = target.value;
+			this.onChange(field, value);
+		});
+
+		this.container.addEventListener('submit', (e: Event) => {
+			e.preventDefault();
+			this.events.emit(`${this.container.name}:submit`);
+		});
 	}
 
-	/**
-	 * A method that is called when the value of a field changes.
-	 *
-	 * @param {keyof T} field - the field that has changed
-	 * @param {string} value - the new value of the field
-	 */
-	protected onChange(field: keyof T, value: string): void {}
+	protected onChange(field: keyof T, value: string) {
+		this.events.emit(`${this.container.name}.${String(field)}:update`, {
+			field,
+			value,
+		});
+	}
 
-	/**
-	 * Sets the validity of the submit button.
-	 *
-	 * @param {boolean} value - The validity value to set.
-	 */
-	set valid(value: boolean) {}
+	set valid(value: boolean) {
+		this.submitElement.disabled = !value;
+	}
 
-	/**
-	 * Set the errors value.
-	 *
-	 * @param {string} value - the new value for errors
-	 * @return {void}
-	 */
-	set errors(value: string) {}
+	set errors(value: string) {
+		this.setText(this.errorsElement, value);
+	}
 
-	/**
-	 * Render function for updating the state and rendering the container.
-	 *
-	 * @param {T & FormProps} state - the updated state and form properties
-	 * @return {HTMLElement} the rendered container element
-	 */
-	render(state: T & FormProps) {}
+	render(state: Partial<T> & FormProps) {
+		const { valid, errors, ...inputs } = state;
+		super.render({ valid, errors });
+		Object.assign(this, inputs);
+		return this.container;
+	}
 }

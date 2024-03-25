@@ -1,47 +1,47 @@
 import { View } from './View';
+import { ensureElement } from '../../utils/utils';
 import { Events } from './Events';
 
-interface ModalProps {
+interface IModalData {
 	content: HTMLElement;
 }
 
-export class Modal extends View<ModalProps> {
+export class Modal extends View<IModalData> {
 	protected _closeButton: HTMLButtonElement;
 	protected _content: HTMLElement;
 
-	/**
-	 * Constructor for initializing the modal.
-	 *
-	 * @param {HTMLElement} container - The container element for the modal
-	 * @param {Events} events - The events object for handling events
-	 */
 	constructor(container: HTMLElement, protected events: Events) {
 		super(container);
+
+		this._content = ensureElement('.modal__content', container);
+		this._closeButton = ensureElement<HTMLButtonElement>(
+			'.modal__close',
+			container
+		);
+
+		this._closeButton.addEventListener('click', this.close.bind(this));
+		this.container.addEventListener('click', this.close.bind(this));
+		this._content.addEventListener('click', (event) => event.stopPropagation());
 	}
 
-	/**
-	 * Set the content of the element.
-	 *
-	 * @param {HTMLElement} value - the new content to be set
-	 */
-	set content(value: HTMLElement) {}
+	set content(value: HTMLElement) {
+		this._content.replaceChildren(value);
+	}
 
-	/**
-	 * opens the modal by adding `modal_active` class to the container element
-	 */
-	open() {}
+	open() {
+		this.container.classList.add('modal_active');
+		this.events.emit('modal:open');
+	}
 
-	/**
-	 * Closes the modal by removing the `modal_active` class from the container,
-	 * clearing the content, and emitting an event.
-	 */
-	close() {}
+	close() {
+		this.container.classList.remove('modal_active');
+		this.content = null;
+		this.events.emit('modal:close');
+	}
 
-	/**
-	 * Renders the modal with the provided data and returns the container element.
-	 *
-	 * @param {ModalProps} data - The data to be rendered in the modal.
-	 * @return {HTMLElement} The container element of the modal.
-	 */
-	render(data: ModalProps): HTMLElement {}
+	render(data: IModalData): HTMLElement {
+		super.render(data);
+		this.open();
+		return this.container;
+	}
 }

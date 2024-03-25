@@ -1,27 +1,55 @@
 import { Product } from '../../types';
-import { Model } from '../base/Model';
 import { Events } from '../base/Events';
+import { Model } from '../base/Model';
 
 export class Basket extends Model<Product[]> {
-	protected products: Product[] = [];
+	protected productList: Product[] = [];
 
 	constructor(events: Events) {
 		super([], events);
 	}
 
-	getProducts(): Product[] {}
+	getProducts(): Product[] {
+		return this.productList;
+	}
 
-	changeProducts() {}
+	changeProductList(): void {
+		this.events.emit('basket:update', this.productList);
+	}
 
-	addProduct(product: Product) {}
+	clear(): void {
+		this.productList = [];
+	}
 
-	removeProduct(product: Product) {}
+	removeProduct(product: Product): void {
+		const productId = product.id;
+		this.productList = this.productList.filter((product) => {
+			return product.id !== productId;
+		});
+		this.changeProductList();
+	}
 
-	clear() {}
+	addProduct(product: Product): void {
+		const productIndex = this.productList.findIndex((p) => p.id === product.id);
+		if (productIndex === -1) {
+			this.productList.push(product);
+		}
+		this.changeProductList();
+	}
 
-	getTotalAmount() {}
+	getTotalAmount() {
+		return this.productList.reduce((totalAmount, product) => {
+			return totalAmount + product.price;
+		}, 0);
+	}
 
-	getProductIds(): string[] {}
+	getProductIds(): string[] {
+		return this.productList.map((product) => product.id);
+	}
 
-	makeOrder(): void {}
+	makeOrder(): void {
+		if (this.productList.length > 0) {
+			this.emitChanges('basket:order');
+		}
+	}
 }

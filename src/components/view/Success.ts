@@ -1,28 +1,33 @@
+import { OrderData } from '../../types';
+import { ensureElement } from '../../utils/utils';
 import { View } from '../base/View';
 
-interface SuccessProps {
-	total: number;
-}
-
-export class Success extends View<SuccessProps> {
+export class SuccessUI extends View<OrderData> {
 	closeButton: HTMLButtonElement;
 	descriptionElement: HTMLElement;
 
-	/**
-	 * Initializes a new instance of the class with the specified container element and success action.
-	 *
-	 * @param {HTMLElement} container - The container element for the success component.
-	 * @param {ISuccessAction} action - The success action to be performed when the close button is clicked.
-	 */
-	constructor(container: HTMLElement, action: { onClick: () => void }) {
+	constructor(container: HTMLElement, { onClick }: { onClick: () => void }) {
 		super(container);
+
+		this.closeButton = ensureElement<HTMLButtonElement>(
+			'.order-success__close',
+			this.container
+		);
+
+		this.descriptionElement = ensureElement(
+			'.order-success__description',
+			this.container
+		);
+
+		if (!onClick) return;
+
+		this.closeButton.addEventListener('click', onClick);
+	}
+	set total(value: number) {
+		this.setText(this.descriptionElement, `Списано ${value} синапсов`);
 	}
 
-	/**
-	 * Set the total value and update the description element.
-	 *
-	 * @param {number} value - the value to set
-	 * @return {void}
-	 */
-	set total(value: number) {}
+	set id(value: string) {
+		this.container.dataset.id = value;
+	}
 }

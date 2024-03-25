@@ -1,40 +1,54 @@
+import { ensureElement } from '../../utils/utils';
 import { View } from '../base/View';
 import { Events } from '../base/Events';
 
 interface PageProps {
+	products: HTMLElement[];
 	count: number;
-	list: HTMLElement[];
-	isLock: boolean;
+	lock: boolean;
 }
 
-export class Page extends View<PageProps> {
-	private _counter: HTMLElement;
-	private _products: HTMLElement;
-	private _wrapper: HTMLElement;
-	private _basket: HTMLButtonElement;
+export class PageUI extends View<PageProps> {
+	protected counterElement: HTMLElement;
+	protected buttonElement: HTMLButtonElement;
+	protected catalogElement: HTMLElement;
+	protected wrapperElement: HTMLElement;
 
 	constructor(container: HTMLElement, protected events: Events) {
 		super(container);
+
+		this.catalogElement = ensureElement('.gallery', this.container);
+		this.wrapperElement = ensureElement('.page__wrapper', this.container);
+
+		this.counterElement = ensureElement(
+			'.header__basket-counter',
+			this.container
+		);
+
+		this.buttonElement = ensureElement<HTMLButtonElement>(
+			'.header__basket',
+			this.container
+		);
+
+		this.buttonElement.addEventListener('click', () => {
+			this.events.emit('basket:open');
+		});
 	}
 
-	/**
-	 * Set the count value.
-	 *
-	 * @param {number} value - The new value for the counter.
-	 */
-	set count(value: number) {}
+	set products(products: HTMLElement[]) {
+		this.catalogElement.replaceChildren(...products);
+	}
 
-	/**
-	 * Set the products of the object.
-	 *
-	 * @param {HTMLElement[]} items - The array of HTMLElement representing the products.
-	 */
-	set products(items: HTMLElement[]) {}
+	set count(value: number) {
+		this.setText(this.counterElement, value);
+	}
 
-	/**
-	 * Sets the lock value and toggles the 'page__wrapper_locked' class on the wrapper element.
-	 *
-	 * @param {boolean} value - The new value for the lock.
-	 */
-	set lock(value: boolean) {}
+	set lock(value: boolean) {
+		if (value) {
+			this.wrapperElement.classList.add('page__wrapper_locked');
+			return;
+		}
+
+		this.wrapperElement.classList.remove('page__wrapper_locked');
+	}
 }
