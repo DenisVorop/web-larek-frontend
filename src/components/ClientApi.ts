@@ -1,5 +1,5 @@
 import { Order, Product, OrderData } from '../types';
-import { Api, ApiListResponse } from './base/Api';
+import { Api, ApiListResponse } from './Base/Api';
 
 interface ProductApi {
 	cdn: string;

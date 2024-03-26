@@ -1,6 +1,6 @@
 import { Contacts } from '../../types';
-import { Events } from '../base/Events';
-import { Form } from '../base/Form';
+import { Events } from '../Base/Events';
+import { Form } from '../Base/Form';
 
 export class ContactsFormUI extends Form<Contacts> {
 	constructor(container: HTMLFormElement, events: Events) {

@@ -1,6 +1,6 @@
 import { OrderData } from '../../types';
 import { ensureElement } from '../../utils/utils';
-import { View } from '../base/View';
+import { View } from '../Base/View';
 
 export class SuccessUI extends View<OrderData> {
 	closeButton: HTMLButtonElement;

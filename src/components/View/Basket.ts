@@ -1,6 +1,6 @@
 import { createElement, ensureElement } from '../../utils/utils';
-import { View } from '../base/View';
-import { Events } from '../base/Events';
+import { View } from '../Base/View';
+import { Events } from '../Base/Events';
 
 interface IBasketView {
 	products: HTMLElement[];

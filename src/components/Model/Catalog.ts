@@ -1,6 +1,6 @@
 import { Product } from '../../types';
-import { Events } from '../base/Events';
-import { Model } from '../base/Model';
+import { Events } from '../Base/Events';
+import { Model } from '../Base/Model';
 
 export class Catalog extends Model<Product[]> {
 	catalogList: Product[] = [];

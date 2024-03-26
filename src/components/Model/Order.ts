@@ -1,6 +1,6 @@
 import { Order as OrderProps, OrderForm, Payments } from '../../types';
-import { Events } from '../base/Events';
-import { Model } from '../base/Model';
+import { Events } from '../Base/Events';
+import { Model } from '../Base/Model';
 
 export class Order extends Model<OrderProps> {
 	order: OrderForm = {

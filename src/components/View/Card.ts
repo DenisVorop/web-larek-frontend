@@ -1,4 +1,4 @@
-import { View } from '../base/View';
+import { View } from '../Base/View';
 import { Product, Categories } from '../../types';
 import { ensureElement } from '../../utils/utils';
 
@@ -86,7 +86,6 @@ export class CardUI extends View<Product> {
 	}
 
 	set category(category: Categories) {
-		console.log(this.categoryElement);
 		this.toggleClass(
 			this.categoryElement,
 			this.getCategoryColorClassName(category)

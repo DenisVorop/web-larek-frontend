@@ -1,7 +1,7 @@
 import { Delivery, Payments } from '../../types';
 import { ensureAllElements } from '../../utils/utils';
-import { Events } from '../base/Events';
-import { Form } from '../base/Form';
+import { Events } from '../Base/Events';
+import { Form } from '../Base/Form';
 
 export class DeliveryFormUI extends Form<Delivery> {
 	paymentButtons: HTMLButtonElement[];
