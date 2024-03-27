@@ -33,12 +33,6 @@ export class BasketUI extends View<IBasketView> {
 
 	set products(products: HTMLElement[]) {
 		if (products.length) {
-			products.forEach((product, index) => {
-				const productIndex = product.querySelector('.basket__item-index');
-				if (!productIndex) return;
-
-				productIndex.textContent = (index + 1).toString();
-			});
 			this.listElement.replaceChildren(...products);
 			this.setVisible(this.totalAmountElement);
 			this.setDisabled(this.buttonElement, false);

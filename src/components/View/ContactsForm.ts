@@ -4,11 +4,7 @@ import { Form } from '../Base/Form';
 
 export class ContactsFormUI extends Form<Contacts> {
 	constructor(container: HTMLFormElement, events: Events) {
-		super(container, events);
-
-		this.submitElement.addEventListener('click', () => {
-			this.events.emit('order.contacts:next');
-		});
+		super(container, events, 'contacts');
 	}
 
 	set phone(value: string) {

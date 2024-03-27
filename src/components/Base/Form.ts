@@ -11,7 +11,11 @@ export class Form<T> extends View<FormProps> {
 	protected submitElement: HTMLButtonElement;
 	protected errorsElement: HTMLElement;
 
-	constructor(protected container: HTMLFormElement, protected events: Events) {
+	constructor(
+		protected container: HTMLFormElement,
+		protected events: Events,
+		protected eventName: 'delivery' | 'contacts'
+	) {
 		super(container);
 
 		this.submitElement = ensureElement<HTMLButtonElement>(
@@ -32,7 +36,7 @@ export class Form<T> extends View<FormProps> {
 
 		this.container.addEventListener('submit', (e: Event) => {
 			e.preventDefault();
-			this.events.emit(`${this.container.name}:submit`);
+			this.events.emit(`order.${eventName}:next`);
 		});
 	}
 
@@ -44,7 +48,7 @@ export class Form<T> extends View<FormProps> {
 	}
 
 	set valid(value: boolean) {
-		this.submitElement.disabled = !value;
+		this.setDisabled(this.submitElement, !value);
 	}
 
 	set errors(value: string) {

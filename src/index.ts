@@ -97,14 +97,17 @@ eventEmitter.on('basket:update', (basket: Product[]) => {
 
 eventEmitter.on('basket:open', () => {
 	const basketData = basket.getProducts();
-	const cardBasketTemplates = basketData.map((product) => {
-		return new CardUI('card', cloneTemplate(cardBasketTemplate), {
+	const cardBasketTemplates = basketData.map((product, index) => {
+		const card = new CardUI('card', cloneTemplate(cardBasketTemplate), {
 			onClick: () => {
 				product.isAddedToBasket = !product.isAddedToBasket;
 				eventEmitter.emit('product:remove', product);
 				eventEmitter.emit('basket:open');
 			},
-		}).render(product);
+		});
+		card.index = index + 1;
+
+		return card.render(product);
 	});
 
 	modal.render({

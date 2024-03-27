@@ -1,13 +1,13 @@
 export abstract class View<T> {
 	protected constructor(protected readonly container: HTMLElement) {}
 
-	toggleClass(element: HTMLElement, className: string) {
+	toggleClass(element: HTMLElement, className: string, force?: boolean) {
 		if (!element) return;
 
-		element.classList.add(className);
+		element.classList.toggle(className, force);
 	}
 
-	protected setText(element: HTMLElement, value: unknown) {
+	protected setText(element: Element, value: unknown) {
 		if (!element) return;
 
 		element.textContent = String(value);

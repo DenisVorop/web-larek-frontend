@@ -17,6 +17,7 @@ export class CardUI extends View<Product> {
 	protected descriptionElement?: HTMLElement;
 	protected imageElement?: HTMLImageElement;
 	protected categoryElement?: HTMLElement;
+	protected indexElement: HTMLElement;
 
 	constructor(
 		block: string,
@@ -33,6 +34,7 @@ export class CardUI extends View<Product> {
 		this.imageElement = container.querySelector(`.${block}__image`);
 		this.categoryElement = container.querySelector(`.${block}__category`);
 		this.buttonElement = container.querySelector(`.${block}__button`);
+		this.indexElement = container.querySelector('.basket__item-index');
 
 		if (!action?.onClick) return;
 
@@ -43,6 +45,11 @@ export class CardUI extends View<Product> {
 
 		this.container.addEventListener('click', action.onClick);
 	}
+
+	set index(value: number) {
+		this.setText(this.indexElement, value);
+	}
+
 	set id(value: string) {
 		this.container.dataset.id = value;
 	}
@@ -92,6 +99,7 @@ export class CardUI extends View<Product> {
 		);
 		this.setText(this.categoryElement, category);
 	}
+
 	set description(value: string) {
 		this.setText(this.descriptionElement, value);
 	}

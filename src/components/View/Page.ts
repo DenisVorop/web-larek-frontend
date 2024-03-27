@@ -44,11 +44,6 @@ export class PageUI extends View<PageProps> {
 	}
 
 	set lock(value: boolean) {
-		if (value) {
-			this.wrapperElement.classList.add('page__wrapper_locked');
-			return;
-		}
-
-		this.wrapperElement.classList.remove('page__wrapper_locked');
+		this.toggleClass(this.wrapperElement, 'page__wrapper_locked', value);
 	}
 }

@@ -6,11 +6,7 @@ import { Form } from '../Base/Form';
 export class DeliveryFormUI extends Form<Delivery> {
 	paymentButtons: HTMLButtonElement[];
 	constructor(container: HTMLFormElement, events: Events) {
-		super(container, events);
-
-		this.submitElement.addEventListener('click', () => {
-			this.events.emit('order.delivery:next');
-		});
+		super(container, events, 'delivery');
 
 		this.paymentButtons = ensureAllElements(
 			'.order__buttons button',
@@ -20,9 +16,11 @@ export class DeliveryFormUI extends Form<Delivery> {
 		this.paymentButtons.forEach((button) => {
 			button.addEventListener('click', (event) => {
 				this.resetButtonStatus();
-				button.classList.add('button_alt-active');
-				const paymentMethod = (event.target as HTMLButtonElement).name;
-				this.paymentSelection(paymentMethod as Payments);
+				this.toggleClass(button, 'button_alt-active');
+
+				if (event.target instanceof HTMLButtonElement) {
+					this.paymentSelection(event.target.name as Payments);
+				}
 			});
 		});
 	}
@@ -31,7 +29,7 @@ export class DeliveryFormUI extends Form<Delivery> {
 		if (!this.paymentButtons) return;
 
 		this.paymentButtons.forEach((button) => {
-			button.classList.remove('button_alt-active');
+			this.toggleClass(button, 'button_alt-active', false);
 		});
 	}
 
